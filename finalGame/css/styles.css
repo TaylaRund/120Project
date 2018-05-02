@@ -1,0 +1,13 @@
+body {
+	font-family: Helvetica;
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+canvas {
+	display : block;
+	margin : auto;
+}
+div {
+	font-size: 12px;
+}
