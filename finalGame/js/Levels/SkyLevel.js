@@ -35,11 +35,38 @@ SkyLevel.prototype = {
 
         //make camera follow player
         game.camera.follow(player);
+
+        //place collidables
+        var totalEnemies = 50;
+        this.createEnemies(totalEnemies);
+        var totalFuel = 10;
+        this.createFuel(totalFuel);
+
     },
     update: function() {
 
-        if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
+        //TEMPORARY COLLISION CHECKS: is it better to check for collisions in level, obstacle, fuel, or player?
+        //is it also better to use collide() or overlap()?
+        
+        //collide() example
+        if (game.physics.arcade.collide(player, enemy)){
+            player.tint = 0xff2a00; //tint player instead of kill()
+            //player.kill();
+        } else {
+            player.tint = 0xffffff;
+        }
 
+        //overlap() example
+        if (game.physics.arcade.overlap(player, fuel, this.collectFuel, null, this)){
+            //console.log("fuel collision!");
+            player.tint = 0x0800ff; //tint player instead of kill()
+            //player.kill();
+        } else {
+            player.tint = 0xffffff;
+        }
+
+
+        if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
             //reset world bounds to game height and width
             game.world.setBounds(0, 0, 800, 400);
 
@@ -57,5 +84,38 @@ SkyLevel.prototype = {
                 game.state.start('Start');
             }
         }
+    },
+
+    //other functions
+
+    createEnemies: function(totalEnemies){
+        var xLoc, yLoc;
+        enemy = new Array(totalEnemies);
+
+        for (var i = 0; i<totalEnemies; i++){
+            xLoc = game.rnd.integerInRange(0, game.world.width);
+            yLoc = game.rnd.integerInRange(0, game.world.height);
+            enemy[i] = new Obstacle(game, 'atlas', 'leaf', 1, xLoc, yLoc);
+            game.add.existing(enemy[i]);
+            enemy[i].enableBody = true;
+        }
+    },
+
+    createFuel: function(totalFuel){
+        var xLoc, yLoc;
+        fuel = new Array(totalFuel);
+
+        for (var i = 0; i<totalFuel; i++){
+            xLoc = game.rnd.integerInRange(0, game.world.width);
+            yLoc = game.rnd.integerInRange(0, game.world.height);
+            fuel[i] = new Obstacle(game, 'atlas', 'firstaid', 1, xLoc, yLoc);
+            game.add.existing(fuel[i]);
+            fuel[i].enableBody = true;
+        }
+    },
+
+    collectFuel: function(player, Obstacle){
+        console.log("inside collide Fuel");
+        //Obstacle.kill();
     }
 }
