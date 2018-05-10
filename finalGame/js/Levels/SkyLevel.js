@@ -37,6 +37,7 @@ SkyLevel.prototype = {
         game.camera.follow(player);
     },
     update: function() {
+
         if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
 
             //reset world bounds to game height and width
