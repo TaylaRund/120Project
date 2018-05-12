@@ -7,9 +7,10 @@ function Player(game, sprite, velocityX, level) {
 	this.anchor.set(0.5);
 	// put some physics on it
 	game.physics.enable(this, Phaser.Physics.ARCADE);
-	this.body.collideWorldBounds = true;
+	this.body.collideWorldBounds = false;
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
+
 	// this.body.gravity = 300; // set the gravity
 	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'S', 1, 8, '', 2), 15, true); // standing still
 	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'M', 9, 16, '', 2), 15, true); // movement sideways
@@ -21,6 +22,10 @@ Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 // override Phaser.Sprite update (to spin the diamond)
 Player.prototype.update = function() {
+
+	//screen wrap
+	game.world.wrap(this, 0, true);
+
 	// MOVEMENT
 	if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
 		this.body.velocity.y = 50;

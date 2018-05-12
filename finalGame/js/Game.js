@@ -18,4 +18,4 @@ game.state.add('Level5', Level5);
 game.state.add('SkyLevel', SkyLevel);
 game.state.add('End', End);
 // START
-game.state.start('Start');
+game.state.start('SkyLevel');
