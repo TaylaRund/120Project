@@ -115,6 +115,7 @@ SkyLevel.prototype = {
     },
 
     collectFuel: function(player, Obstacle){
+        player.body.velocity.y -= 100;
         console.log("inside collide Fuel");
         //Obstacle.kill();
     }
