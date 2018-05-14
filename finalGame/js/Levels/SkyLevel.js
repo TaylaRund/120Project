@@ -18,14 +18,14 @@ SkyLevel.prototype = {
     // game.load.image('tempBkg', '/img/temp/sky_1.png');
     // game.load.atlas('atlas', '/img/temp/atlas.png', '/img/temp/atlas.json');
 
-    // //sound preload
-    //game.load.audio('music_Fly', '/audio/Flying_Song.wav');
-    //game.load.audio('bounce', ['/audio/Bounce.wav']);
-    //game.load.audio('death', '/audio/Death.wav');
-    // game.load.audio('damage', '/audio/Take_Damage.wav');
-    // game.load.audio('click', '/audio/UI_Click.wav');
-    // game.load.audio('esc', '/audio/UI_exit.wav');
-    // // //sprites proload
+    //sound preload
+    game.load.audio('music_Fly', '/audio/Flying_Song.wav');
+    game.load.audio('bounce', ['/audio/Bounce.wav']);
+    game.load.audio('death', '/audio/Death.wav');
+    game.load.audio('damage', '/audio/Take_Damage.wav');
+    game.load.audio('click', '/audio/UI_Click.wav');
+    game.load.audio('esc', '/audio/UI_exit.wav');
+    // //sprites proload
     game.load.image('cloud', '/img/Cloud.png');
     game.load.image('sky', '/img/sky_1.png');
     game.load.image('storm_cloud', '/img/Strom_Cloud.png');
@@ -49,21 +49,21 @@ SkyLevel.prototype = {
     title.anchor.setTo(0.5, 0.5); // set anchor to the middle
     console.log(level);
     gameOver = false;
-    // volumeMusic = .5;
-    // volumeSFX = .1;
+    volumeMusic = .5;
+    volumeSFX = .1;
     //set up background and world
     // var bkg = game.add.image(0, 0, 'tempBkg');
     // bkg.scale.y = 1;
     // bkg.scale.x = game.width/bkg.width;
     // //set world bounds to background size
     // game.world.setBounds(0, 0, bkg.width, bkg.height);
-    //sound
-    // fly_M = game.add.audio('music_Fly');
-    // death_S = game.add.audio('death');
-    // bounce_S = game.add.audio('bounce');
-    // damage_S = game.add.audio('damage');
-    // pickUp_S = game.add.audio('click');
-    // fly_M.play('', 0, volumeMusic, true);	// ('marker', start position, volume (0-1), loop)
+    sound
+    fly_M = game.add.audio('music_Fly');
+    death_S = game.add.audio('death');
+    bounce_S = game.add.audio('bounce');
+    damage_S = game.add.audio('damage');
+    pickUp_S = game.add.audio('click');
+    fly_M.play('', 0, volumeMusic, true);	// ('marker', start position, volume (0-1), loop)
     //text
     var levelText = "Sky Level " + level;
     var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
@@ -97,7 +97,7 @@ SkyLevel.prototype = {
         console.log("breeeeeeze");
         player.body.velocity.y -= 180;
         fuel.kill();
-        //bounce.play('', 0, 1, true);
+        bounce.play('', 0, 1, true);
 
 
     }
@@ -110,7 +110,7 @@ SkyLevel.prototype = {
     //collide() example
     if (game.physics.arcade.overlap(player, enemy)){
         //player.tint = 0xff2a00; //tint player instead of kill()
-        //damage_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
+        damage_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
         //player.kill();
         //player.body.velocity.y -= 300;
         enemy.tint = 0x333333;
@@ -175,7 +175,7 @@ SkyLevel.prototype = {
   },
 
   collectFuel: function(player, Obstacle){
-    // pickUp_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
+    pickUp_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
       console.log("inside collide Fuel");
       //player.body.velocity.y += 5;
       // Obstacle.kill();
