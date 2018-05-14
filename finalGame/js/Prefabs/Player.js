@@ -1,20 +1,23 @@
 // PLAYER PREFAB
 // Player prefab constructor function
-function Player(game, sprite, velocityX, level) {
+function Player(game, index, sprite, velocityX, region, max, gravity) {
 	// call to Phaser.Sprite // new Sprite(game, x, y, key, frame)
-	Phaser.Sprite.call(this, game, game.width/2, game.height/2, sprite); // call sprite constuctor
+	Phaser.Sprite.call(this, game, game.width/2, game.height, index, sprite); // call sprite constuctor
 	// add custom properties
 	this.anchor.set(0.5);
 	// put some physics on it
-	game.physics.enable(this, Phaser.Physics.ARCADE);
+	this.max = max;
+	game.physics.arcade.enable(this);
+	this.body.gravity.y = gravity;
 	this.body.collideWorldBounds = true;
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
 	// this.body.gravity = 300; // set the gravity
-	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'S', 1, 8, '', 2), 15, true); // standing still
-	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'M', 9, 16, '', 2), 15, true); // movement sideways
-	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'U', 17, 20, '', 2), 15, true); // up
-	// 	// this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'D', 21, 24, '', 2), 15, true); // down
+	this.animations.add('walk', Phaser.Animation.generateFrameNames(index, 'mouse', 1, 6, '', 2), 12, true); // movement
+	this.animations.add('still', Phaser.Animation.generateFrameNames(index,'mouse', 2, '', 2), 1, true); // still
+// 	this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'U', 17, 20, '', 2), 15, true); // up
+// 	this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'D', 21, 24, '', 2), 15, true); // down
+
 }
 // explicitly define prefab's prototype (Phaser.Sprite) and constructor (Player)
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -22,39 +25,67 @@ Player.prototype.constructor = Player;
 // override Phaser.Sprite update (to spin the diamond)
 Player.prototype.update = function() {
 	// MOVEMENT
-	if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-		this.body.velocity.y = 50;
-	} else if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-		this.body.velocity.y = -50;
+	if (this.body.position.y > 10) {
+		game.physics.arcade.overlap(player, fuel, collect, null, this);
+    function collect() {
+      this.body.position.y -= 150;
+    }
+		if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+			this.body.velocity.y = 50;
+		} else if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+			this.body.velocity.y = -50;
+			// this.body.gravity += 100
+		} else {
+			this.body.velocity.y = 0;
+		}
+		if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+			this.animations.play('walk');
+			this.body.velocity.x = 50;
+		} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+
+			this.animations.play('walk');
+			this.body.velocity.x = -50;
+		} else {
+			this.animations.play('still');
+		}
 	} else {
-		this.body.velocity.y = 0;
+		console.log("AHHHHHHHHHHHHHHHHHHHH");
+		// if (this.region == 'sky') {
+		// 	if (level == 5) { // move on to next state
+		// 		game.state.start('End');
+		// 	} else if (level == 4) { // move on to next state
+		// 		game.state.start('Level5');
+		// 	} else if (level == 3) { // move on to next state
+		// 		game.state.start('Level4');
+		// 	} else if (level == 2) { // move on to next state
+		// 		game.state.start('Level3');
+		// 	} else if (level == 1) { // move on to next state
+		// 		game.state.start('Level2');
+		// 	}
+		// } else {
+		// 	game.state.start('SkyLevel');
+		// }
+		game.state.start('End');
 	}
-	if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-		this.body.velocity.x = 50;
-	} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-		this.body.velocity.x = -50;
-	} else {
-		this.body.velocity.x = 0;
-	}
-	// ANIMATE
+	//ANIMATE
 	// if (this.velocity.x < 0) { // moving left
-	// 	if (this.velocity.y > 0) { // moving down
-	// 		this.animations.play(sprite + 'D'); // mirror of moving down animation
-	// 	} else if (this.velocity.y < 0) { // moving up
-	// 		this.animations.play(sprite + 'U'); // mirror of moving up animation
-	// 	} else { // moving horizontally
-	// 		this.animations.play(sprite + 'M'); // mirror of moving right animation
-	// 	}
+	// 	// if (this.velocity.y > 0) { // moving down
+	// 	// 	this.animations.play(sprite + 'D'); // mirror of moving down animation
+	// 	// } else if (this.velocity.y < 0) { // moving up
+	// 	// 	this.animations.play(sprite + 'U'); // mirror of moving up animation
+	// 	// } else { // moving horizontally
+	// 		this.animations.play(walk); // mirror of moving right animation
+	// 	// }
 	// } else if (this.velocity.x > 0) { // moving right
-	// 	if (this.velocity.y > 0) { // moving down
-	// 		this.animations.play(sprite + 'D'); // down animation
-	// 	} else if (this.velocity.y < 0) { // moving up
-	// 		this.animations.play(sprite + 'U'); // up animation
-	// 	} else { // moving horizontally
-	// 		this.animations.play(sprite + 'M'); // right animation
-	// 	}
+	// 	// if (this.velocity.y > 0) { // moving down
+	// 	// 	this.animations.play(sprite + 'D'); // down animation
+	// 	// } else if (this.velocity.y < 0) { // moving up
+	// 	// 	this.animations.play(sprite + 'U'); // up animation
+	// 	// } else { // moving horizontally
+	// 		this.animations.play(walk); // right animation
+	// 	// }
 	// } else { // standing still
-	// 	this.animations.play(sprite + 'S'); // standing still animation
+	// 	this.animations.play(walk); // standing still animation
 	// }
 }
 // var Player = function(game, sprite, grav, level) {
