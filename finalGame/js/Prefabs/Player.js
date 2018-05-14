@@ -8,11 +8,12 @@ function Player(game, index, sprite, velocityX, region, max, gravity) {
 	// put some physics on it
 	this.max = max;
 	game.physics.arcade.enable(this);
-	this.body.gravity.y = gravity;
+	this.body.gravity.y = 130;
+
 	this.body.collideWorldBounds = true;
 	this.body.velocity.x = 0;
 	this.body.velocity.y = 0;
-	// this.body.gravity = 300; // set the gravity
+	// this.body.gravity = 10; // set the gravity
 	this.animations.add('walk', Phaser.Animation.generateFrameNames(index, 'mouse', 1, 6, '', 2), 12, true); // movement
 	this.animations.add('still', Phaser.Animation.generateFrameNames(index,'mouse', 2, '', 2), 1, true); // still
 // 	this.animations.add('', Phaser.Animation.generateFrameNames(sprite + 'U', 17, 20, '', 2), 15, true); // up
@@ -25,47 +26,85 @@ Player.prototype.constructor = Player;
 // override Phaser.Sprite update (to spin the diamond)
 Player.prototype.update = function() {
 	// MOVEMENT
-	if (this.body.position.y > 10) {
-		game.physics.arcade.overlap(player, fuel, collect, null, this);
-    function collect() {
-      this.body.position.y -= 150;
-    }
-		if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-			this.body.velocity.y = 50;
-		} else if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-			this.body.velocity.y = -50;
-			// this.body.gravity += 100
-		} else {
-			this.body.velocity.y = 0;
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-			this.animations.play('walk');
-			this.body.velocity.x = 50;
-		} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
 
-			this.animations.play('walk');
-			this.body.velocity.x = -50;
-		} else {
-			this.animations.play('still');
+
+	//TEMPORARY: HOW TO MAKE MOVEMENT SPECIFIC TO ONLY THE SKYLEVEL?
+	if (this.body.position.y > 10) {
+		if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+			if (player.body.velocity.y > -100 )
+				player.body.velocity.y += -10;
 		}
-	} else {
-		console.log("AHHHHHHHHHHHHHHHHHHHH");
-		// if (this.region == 'sky') {
-		// 	if (level == 5) { // move on to next state
-		// 		game.state.start('End');
-		// 	} else if (level == 4) { // move on to next state
-		// 		game.state.start('Level5');
-		// 	} else if (level == 3) { // move on to next state
-		// 		game.state.start('Level4');
-		// 	} else if (level == 2) { // move on to next state
-		// 		game.state.start('Level3');
-		// 	} else if (level == 1) { // move on to next state
-		// 		game.state.start('Level2');
+
+		//should you be able to control downward motion? 
+
+		if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+			if (player.body.velocity.x > -100 )
+				player.body.velocity.x += -5;
+		}
+
+		if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+			if (player.body.velocity.x < 100 )
+				player.body.velocity.x += 5;
+		}
+ 
+
+
+		// game.physics.arcade.overlap(player, fuel, collect, null, this);
+	 //    function collect() {
+	 //    	if (this.body.velocity.y > -100)
+
+	 //      		this.body.velocity.y += -5;
+	 //    }
+
+	 //    if (this.body.velocity.y > -100){
+		// 	if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+		// 		this.body.velocity.y += 5;
+		// 	} else if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+		// 		this.body.velocity.y += -20;
+		// 		// this.body.gravity += 100
+		// 	} else {
+		// 		this.body.velocity.y = 0;
 		// 	}
-		// } else {
-		// 	game.state.start('SkyLevel');
 		// }
-		game.state.start('End');
+		// if (Math.abs(this.body.velocity.x) < 100 ) {
+
+		// 	if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+		// 		this.animations.play('walk');
+		// 		this.body.velocity.x += 5;
+		// 	} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+
+		// 		this.animations.play('walk');
+		// 		this.body.velocity.x += -5;
+		// 	} else {
+		// 		this.animations.play('still');
+		// 	}
+		// }
+	} else {
+
+		//tween to the ground:
+		var fall = game.add.tween(this).to({ y: game.height }, 3000, Phaser.Easing.Linear.None, true, 0);
+		fall.onComplete.add(nextStage, this);
+
+		function nextStage(){
+			// if (this.region == 'sky') {
+			// 	if (level == 5) { // move on to next state
+			// 		game.state.start('End');
+			// 	} else if (level == 4) { // move on to next state
+			// 		game.state.start('Level5');
+			// 	} else if (level == 3) { // move on to next state
+			// 		game.state.start('Level4');
+			// 	} else if (level == 2) { // move on to next state
+			// 		game.state.start('Level3');
+			// 	} else if (level == 1) { // move on to next state
+			// 		game.state.start('Level2');
+			// 	}
+			// } else {
+			// 	game.state.start('SkyLevel');
+			// }
+			game.state.start('End');
+		}
+
+
 	}
 	//ANIMATE
 	// if (this.velocity.x < 0) { // moving left

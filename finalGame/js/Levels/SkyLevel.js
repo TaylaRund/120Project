@@ -1,5 +1,6 @@
 // define SkyLevel state and methods
 var fuel;
+var gameOver;
 var SkyLevel = function(game) {
   var level = 1;
   var max = 100*level;
@@ -38,6 +39,7 @@ SkyLevel.prototype = {
     var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
     title.anchor.setTo(0.5, 0.5); // set anchor to the middle
     console.log(level);
+    gameOver = false;
     // volumeMusic = .5;
     // volumeSFX = .1;
     //set up background and world
@@ -57,7 +59,6 @@ SkyLevel.prototype = {
     var levelText = "Sky Level " + level;
     var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
     title.anchor.setTo(0.5, 0.5); // set anchor to the middle
-    console.log(level);
     //player
     // Player(game, index, sprite, velocityX, level, max, gravity)
     player = new Player(game, 'mouse', 'mouse01', 0, 'sky', 500, 500); //PlayerTEMP prefab with scale 1 and rotation 0 -- uses WASD movement
@@ -82,12 +83,14 @@ SkyLevel.prototype = {
 	},
 	update: function() {
     game.physics.arcade.overlap(player, fuel, collect, null, this);
-    function collect() {
-      console.log("breeeeeeze");
-      player.body.position.y -= 20;
+    function collect(player, fuel) {
+        console.log("breeeeeeze");
+        player.body.velocity.y -= 150;
+        fuel.kill();
+
     }
 
-    console.log(player.body.position.y);
+    // console.log(player.body.position.y);
     game.debug.body(player);
     game.debug.body(fuel);
     //TEMPORARY COLLISION CHECKS: is it better to check for collisions in level, obstacle, fuel, or player?
@@ -97,7 +100,7 @@ SkyLevel.prototype = {
         //player.tint = 0xff2a00; //tint player instead of kill()
         //damage_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
         //player.kill();
-        player.body.velocity.y -= 300;
+        //player.body.velocity.y -= 300;
         enemy.tint = 0x333333;
     } else {
         player.tint = 0xffffff;
@@ -107,7 +110,7 @@ SkyLevel.prototype = {
         //console.log("fuel collision!");
         //player.tint = 0x0800ff; //tint player instead of kill()
         //player.kill();
-        player.body.velocity.y -= 300;
+        //player.body.velocity.y -= 300;
     } else {
         player.tint = 0xffffff;
     }
@@ -162,7 +165,7 @@ SkyLevel.prototype = {
   collectFuel: function(player, Obstacle){
     // pickUp_S.play('', 0, volumeSFX, false);	// ('marker', start position, volume (0-1), loop)
       console.log("inside collide Fuel");
-      player.body.velocity.y += 100;
+      //player.body.velocity.y += 5;
       // Obstacle.kill();
   }
 
