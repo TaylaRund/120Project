@@ -84,6 +84,7 @@ Player.prototype.update = function() {
 		//tween to the ground:
 		var fall = game.add.tween(this).to({ y: game.height }, 3000, Phaser.Easing.Linear.None, true, 0);
 		fall.onComplete.add(nextStage, this);
+	
 
 		function nextStage(){
 			// if (this.region == 'sky') {
@@ -101,6 +102,7 @@ Player.prototype.update = function() {
 			// } else {
 			// 	game.state.start('SkyLevel');
 			// }
+
 			game.state.start('End');
 		}
 
