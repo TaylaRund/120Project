@@ -20,4 +20,7 @@ Obstacle.prototype.constructor = Obstacle;
 Obstacle.prototype.update = function() {
 
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0deb669e2d01326d4555581e44335932387c6601
