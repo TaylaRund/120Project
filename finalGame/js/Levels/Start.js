@@ -14,7 +14,7 @@ Start.prototype = {
 	},
 	update: function() {
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
-			damage_S.play('', 0, .5, false);
+			fly_M.play('', 0, .5, false);
 			game.state.start('Level1');
 		}
 	}
