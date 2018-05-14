@@ -5,6 +5,9 @@ var SkyLevel = function(game) {
   var level = 1;
   var max = 100*level;
 
+  //audio
+  var bounce;
+
 };
 SkyLevel.prototype = {
 	preload: function() {
@@ -16,24 +19,30 @@ SkyLevel.prototype = {
     // game.load.atlas('atlas', '/img/temp/atlas.png', '/img/temp/atlas.json');
 
     // //sound preload
-    // game.load.audio('music_Fly', '/audio/Flying_Song.wav');
-    // game.load.audio('bounce', '/audio/Bounce.wav');
-    // game.load.audio('death', '/audio/Death.wav');
+    //game.load.audio('music_Fly', '/audio/Flying_Song.wav');
+    //game.load.audio('bounce', ['/audio/Bounce.wav']);
+    //game.load.audio('death', '/audio/Death.wav');
     // game.load.audio('damage', '/audio/Take_Damage.wav');
     // game.load.audio('click', '/audio/UI_Click.wav');
     // game.load.audio('esc', '/audio/UI_exit.wav');
-    // //sprites proload
+    // // //sprites proload
     game.load.image('cloud', '/img/Cloud.png');
     game.load.image('sky', '/img/sky_1.png');
     game.load.image('storm_cloud', '/img/Strom_Cloud.png');
     game.load.image('PART_dandelion', '/img/Dandelion_Particle.png');
     game.load.image('breeze', '/img/breeze.png');
+
     // //atlas preload
     // game.load.atlas('pip_Dandelion', '/img/Pip-Dandelion.png','/img/Pip-Dandelion.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
     // game.load.atlas('health_Bar', '/img/Health_Bar.png','/img/Health_Bar.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
     // game.load.atlas('mentos', '/img/Mentos.png','/img/Mentos.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 	},
 	create: function() {
+
+
+    //audio
+    //bounce = game.add.audio('bounce');
+
     game.stage.backgroundColor = "#aaddff"; // set background color
     var levelText = "Sky Level " + level;
     var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
@@ -83,10 +92,13 @@ SkyLevel.prototype = {
 	},
 	update: function() {
     game.physics.arcade.overlap(player, fuel, collect, null, this);
+
     function collect(player, fuel) {
         console.log("breeeeeeze");
-        player.body.velocity.y -= 150;
+        player.body.velocity.y -= 180;
         fuel.kill();
+        //bounce.play('', 0, 1, true);
+
 
     }
 
