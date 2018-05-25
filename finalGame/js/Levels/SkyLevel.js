@@ -3,8 +3,10 @@ var fuel;
 var SkyLevel = function(game) {
   var level = 1;
   var max = 100*level;
-
+  var star;
+  var shootingStar;
   var cloud;
+  var breeze;
 
 };
 SkyLevel.prototype = {
@@ -33,9 +35,12 @@ SkyLevel.prototype = {
     var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
     title.anchor.setTo(0.5, 0.5); // set anchor to the middle
     console.log(level);
+
+
     //player
-    // Player(game, index, sprite, velocityX, level, max, gravity)
-    player = new Player(game, 'mouse', 'mouse01', 0, 'sky', 500, game.world.height, yPos, 0); //why does it think the player health is 1 and not 0?
+    //function Player(game, index, sprite, velocityY, region, gravity, x, y, skyLevel) {
+
+    player = new Player(game, 'mouse', 'mouse01', 0, 'sky', 300, game.world.width/2, game.world.height, level); //why does it think the player health is 1 and not 0?
 
     player.scale.setTo(0.5, 0.5);
     game.add.existing(player);
@@ -89,9 +94,20 @@ SkyLevel.prototype = {
     var xLoc, yLoc;
     for (var i = 0; i < totalStars; i++) {
       xLoc = game.rnd.integerInRange(64,game.width-64);
-      yLoc = Math.random()*game.world.height/5;
-      star[i] = new Star(game, 'star', .5, xLoc, yLoc, player);
+      yLoc = game.world.height/10 + Math.random()*game.world.height/10;
+      star[i] = new Star(game, 'star', .5, xLoc, yLoc, player, 0, 0, game.world.height);
       game.add.existing(star[i]);
+    }
+
+    //shooting stars
+    var totalShootingStars = 20;
+    shootingStar = new Array(totalShootingStars);
+    var xLoc, yLoc;
+    for (var i = 0; i < totalShootingStars; i++) {
+      xLoc = game.rnd.integerInRange(64,game.width-64);
+      yLoc = Math.random()*game.world.height/10;
+      shootingStar[i] = new Star(game, 'star', .5, xLoc, yLoc, player, 100, 100, game.world.height/10);
+      game.add.existing(shootingStar[i]);
     }
 
     var healthText = "Health: " + player.health;
@@ -104,7 +120,8 @@ SkyLevel.prototype = {
     game.physics.arcade.overlap(player, emitter, collideRain, null, this);
     game.physics.arcade.overlap(player, cloud, collideCloud, null, this);
     game.physics.arcade.overlap(player, breeze, collideBreeze, null, this);
-    game.physics.arcade.overlap(player, star, collideBreeze, null, this);
+    game.physics.arcade.overlap(player, star, collideStar, null, this);
+    game.physics.arcade.overlap(player, shootingStar, collideStar, null, this);
 
     if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
   		// if (level == 5) { // move on to next state
@@ -132,7 +149,9 @@ SkyLevel.prototype = {
 
     function collideBreeze(player, breeze){
       breeze.kill();
-      player.body.velocity.y -= 1000;
+      var cap = -300;
+      if (player.body.velocity.y>cap)
+        player.body.velocity.y -= 700;
     }
 
     function collideStar(player, star){
@@ -145,6 +164,7 @@ SkyLevel.prototype = {
       player.health += inc;
       healthLabel.setText("Health: " + player.health);
     }
+
 
 	},
 
