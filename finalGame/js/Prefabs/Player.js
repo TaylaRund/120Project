@@ -1,20 +1,32 @@
 // PLAYER PREFAB
 // Player prefab constructor function
-function Player(game, index, sprite, velocityY, region, gravity, yPos, health) {
-	console.log(this.health);
+function Player(game, index, sprite, velocityY, region, gravity, x, y, skyLevel) {
+	//console.log(this.health);
+	// this.game = game;
+	// this.index = index;
+	// this.sprite = sprite;
+	// this.velocityY = velocityY;
+	this.region = region;
+	// this.gravity = gravity;
+	// this.x = x;
+
 	// call to Phaser.Sprite // new Sprite(game, x, y, key, frame)
-	Phaser.Sprite.call(this, game, game.width/2, yPos, index, sprite); // call sprite constuctor
+	Phaser.Sprite.call(this, game, x, y, index, sprite); // call sprite constuctor
 
 	// add custom properties
 	this.anchor.set(0.5);
 
 	// put some physics on it
 	game.physics.arcade.enable(this);
+
+	//this.enableBody = true;
 	this.body.gravity.y = gravity;
 	this.body.bounce.y = 0.2;
 	this.body.collideWorldBounds = true;
 	this.body.velocity.x = 0;
 	this.body.velocity.y = velocityY;
+	this.position.x = x;
+	this.position.y = y
 
 	//animations
 	this.animations.add('walk', Phaser.Animation.generateFrameNames(index, 'mouse', 1, 6, '', 2), 12, true); // movement
@@ -29,25 +41,13 @@ Player.prototype.constructor = Player;
 Player.prototype.update = function() {
 
 	// MOVEMENT
-	this.body.velocity.x = 0;
-	if (this.body.position.y > 10) { //if player has not collided with the top of the game
-		if(game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-			this.body.velocity.y = -350;
-		} else {
 
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-			this.animations.play('walk');
-			this.body.velocity.x = 150;
-		} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-
-			this.animations.play('walk'); //needs to be updated
-			this.body.velocity.x = -150;
-		} else {
-			this.animations.play('still');
-		}
-	} else { //when the player hits the top...
-
+	if (this.region == 'sky'){
+		enableDandelionMovement();
+		//console.log("sky level");
+	}
+	if (this.region == 'ground'){
+		enableGroundMovement();
 	}
 
 	//check for collisions:
@@ -63,8 +63,55 @@ Player.prototype.update = function() {
 
 
 	//accessory functions:
-	function collect() {
-		this.body.position.y -= 150;
+	// function collect() {
+	// 	this.body.position.y -= 150;
+	// }
+
+	function enableDandelionMovement(){
+		if (player.body.position.y > 10) {
+			if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+				if (player.body.velocity.y > -100 )
+					player.body.velocity.y += -10;
+			}
+			if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+				if (player.body.velocity.x > -100 )
+					player.body.velocity.x += -5;
+			}
+
+			if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+				if (player.body.velocity.x < 100 )
+					player.body.velocity.x += 5;
+			}
+		}
+
+	}
+
+	function enableGroundMovement(){
+		player.body.velocity.x = 0;
+		//if (player.body.position.y > 10) { //if player has not collided with the top of the game
+
+			if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+				player.body.velocity.y = 150;
+			} else if(game.input.keyboard.isDown(Phaser.Keyboard.UP) && player.body.touching.down) {
+				player.body.velocity.y = -400;
+			} else {
+				// this.body.velocity.y = 0;
+			}
+
+			if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+				player.animations.play('walk');
+				player.body.velocity.x = 150;
+			} else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+
+				player.animations.play('walk');
+				player.body.velocity.x = -150;
+			} else {
+				player.animations.play('still');
+			}
+
+		//} else { //when the player hits the top...
+
+		//}
 	}
 
 	// function collideDandelion(null, dandelion){
