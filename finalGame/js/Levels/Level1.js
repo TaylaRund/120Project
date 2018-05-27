@@ -1,7 +1,76 @@
 // define Level1 state and methods
 var Level1 = function(game) {
 	var player;
-	var platforms;
+	var platforms;// define Level1 state and methods
+var Level1 = function(game) {
+	var player;
+	var platforms, platform;
+	var max = 500;
+	var dandelions;
+};
+Level1.prototype = {
+	preload: function() {
+		game.load.atlas('mouse', 'assets/img/mouse.png', 'assets/img/mouse.json');
+		game.load.image('level1', 'assets/img/background1-01.png');
+		game.load.image('platform', 'assets/img/platform.png');
+		game.load.image('dandelion', 'assets/img/dandelion.png');
+	},
+	create: function() {
+		var platPosX = [64, 19, 24, 19, 19, 13, 84, 24, 113, 197, 250, 310, 36, 283, 358, 364, 633, 720, 674, 762, 633, 711, 627, 711, 576, 445, 349, 760, 615, 785, 664, 598, 881, 985, 445, 760, 634, 717, 822, 1378, 1515, 1294, 1495, 1409, 1331, 1481, 1437, 2040, 2041, 2035, 2032, 2032, 2032, 2032];
+		var playPosY = [935, 882, 814, 746, 663, 573, 496, 457, 430, 377, 377, 377, 365, 296, 163, 86, 933, 876, 812, 734, 701, 630, 598, 535, 516, 470, 467, 458, 433, 381, 361, 293, 279, 269, 231, 232, 228, 202, 159, 892, 880, 878, 838, 796, 765, 752, 727, 896, 793, 704, 600, 545, 450, 345];
+		level = 1;
+    var levelText = "Ground Level " + level;
+    var title = game.add.text(game.world.width/2, game.world.height/2, levelText, {fontSize: '48px', fill: '#fff'}); // game title
+    title.anchor.setTo(0.5, 0.5); // set anchor to the middle
+
+		// (game, sprite, grav, level)
+		var background = game.add.tileSprite(0, 0, 2048, 1024, 'level1');
+    game.world.setBounds(0, 0, 2048, 1024);
+		var yPos = game.world.height-80;
+		player = new Player(game, 'mouse', 'mouseR00', 0, 'ground', 500, 750, yPos);
+		console.log(player.region);
+		// player.body.setSize(player.width/2, player.height, 0, 0);
+		player.scale.setTo(0.35, 0.35);
+		game.add.existing(player);
+
+		game.camera.follow(player);
+
+		platforms = game.add.group(); // create the group that will include the ledges and ground
+	  platforms.enableBody = true; // enable physics for the platform group
+		// var platform;
+		for (var i = 0; i < platPosX.length; i++) {
+			platform = platforms.create(platPosX[i], playPosY[i], 'platform'); // create and position a ledge
+			platform.scale.setTo(0.25, 0.25); // scale
+			platform.anchor.setTo(0.5, 0);
+			platform.body.immovable = true; // don't move
+		}
+		platform = platforms.create(0, game.world.height-50, 'platform');
+		platform.scale.setTo(game.world.width, 5);
+		platform.body.immovable = true; // don't move
+
+		dandelions = game.add.group();
+		dandelions.enableBody = true; // enable physics for the platform group
+		var dandelion;
+		for (var i = 0; i < 10; i++) {
+			dandelion = dandelions.create(Math.random()*game.world.width, Math.random()*game.world.height, 'dandelion'); // create and position a ledge
+			dandelion.scale.setTo(0.25, 0.25);
+		}
+	},
+	update: function() {
+		game.physics.arcade.overlap(player, dandelions, collect, null, this);
+		var hitPlatform;
+		if (player.body.velocity.y > 0) {
+			var hitPlatform = game.physics.arcade.collide(player, platforms); // add collision between the player and platform group
+		}
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) { // move on to next state
+			game.state.start('SkyLevel');
+		}
+		function collect (player, dandelion) {
+			dandelion.kill();
+		}
+	}
+}
+
 	var platform;
 	var max = 500;
 	var dandelion;
