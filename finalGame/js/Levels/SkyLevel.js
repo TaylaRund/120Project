@@ -18,6 +18,10 @@ SkyLevel.prototype = {
     game.load.image('rain', 'assets/img/raindrop01.png');
     game.load.image('star', 'assets/img/star.png');
     game.load.image('breeze', 'assets/img/breeze.png');
+    game.load.atlas('wind', 'assets/img/breeze.png', 'assets/img/breeze.json');
+    game.load.atlas('mouseDandy', 'assets/img/mouseDandy.png', 'assets/img/mouseDandy.json');
+    game.load.atlas('mouseBall', 'assets/img/mouseBall.png', 'assets/img/mouseBall.json');
+    game.load.atlas('mouseBot', 'assets/img/mouseBot.png', 'assets/img/mouseBot.json');
   },
 
 	create: function() {
@@ -40,9 +44,16 @@ SkyLevel.prototype = {
     //player
     //function Player(game, index, sprite, velocityY, region, gravity, x, y, skyLevel) {
 
-    player = new Player(game, 'mouse', 'mouse01', 0, 'sky', 300, game.world.width/2, game.world.height, level); //why does it think the player health is 1 and not 0?
-
-    player.scale.setTo(0.5, 0.5);
+    if (level == 1) {
+      player = new Player(game, 'mouseDandy', 'mouseDandy01', 0, 'sky', -2000, 500, yPos); //PlayerTEMP prefab with scale 1 and rotation 0 -- uses WASD movement
+      player.scale.setTo(0.5, 0.5);
+    } else if (level == 2) {
+      player = new Player(game, 'mouseBall', 'mouseBall01', 0, 'sky', -2000, 500, yPos); //PlayerTEMP prefab with scale 1 and rotation 0 -- uses WASD movement
+    } else {
+      player = new Player(game, 'mouseBot', 'mouseBot01', 0, 'sky', -2000, 500, yPos); //PlayerTEMP prefab with scale 1 and rotation 0 -- uses WASD movement
+      player.scale.setTo(0.65, 0.65);
+    }
+		
     game.add.existing(player);
     //make camera follow player
     game.camera.follow(player);
